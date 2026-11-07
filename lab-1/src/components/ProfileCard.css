@@ -1,0 +1,68 @@
+.profile-card {
+  width: min(100%, 420px);
+  padding: 32px;
+  border: 1px solid #d8dce8;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgb(34 45 80 / 10%);
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.profile-card h1 {
+  margin: 0 0 24px;
+  color: #202944;
+  font-size: 32px;
+}
+
+.profile-card__detail {
+  margin: 12px 0;
+}
+
+.profile-card__technologies {
+  margin: 24px 0;
+}
+
+.profile-card__technologies h2 {
+  margin: 0 0 12px;
+  color: #202944;
+  font-size: 18px;
+}
+
+.profile-card__technologies ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.profile-card__technologies li {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #edf0ff;
+  color: #34447d;
+}
+
+.profile-card__like-button {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 8px;
+  background: #4b5fc7;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.profile-card__like-button:hover {
+  background: #394cae;
+}
+
+.profile-card__like-button:focus-visible {
+  outline: 3px solid #aeb8f5;
+  outline-offset: 3px;
+}

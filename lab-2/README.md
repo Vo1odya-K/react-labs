@@ -22,14 +22,34 @@ https://denysmatsevych.github.io/web-development-2026/react/labs/lab-2/
 
 Заповніть за вкладкою **Components ⚛** у React DevTools (§4.6).
 
-```text
-App
+```
+- App
+  - Header
+  - Card (Тімлід)
+    - Avatar (size={120})
+  - Card (Команда)
+    - Profile (key="1")
+      - Avatar
+    - Profile (key="2")
+      - Avatar
+    - Profile (key="3")
+      - Avatar
+    - Profile (key="4")
+      - Avatar
 ```
 
 ## Дерево залежностей модулів
 
 Заповніть за рядками `import` у файлах `src/` (§4.6).
 
-```text
-main.jsx
+```
+- main.jsx
+  - App.jsx
+    - index.css
+    - data.js
+    - components/Header.jsx
+    - components/Avatar.jsx
+    - components/Profile.jsx
+      - components/Avatar.jsx
+    - components/Card.jsx
 ```

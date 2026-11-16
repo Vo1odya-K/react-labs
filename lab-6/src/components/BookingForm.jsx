@@ -1,17 +1,41 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
+import { Controller, useForm, useWatch } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import GuestsStepper from './GuestsStepper.jsx'
 import { describeBooking } from '../describeBooking.js'
+import { bookingSchema } from '../bookingSchema.js'
+
+const defaultValues = {
+  name: '',
+  phone: '',
+  date: '',
+  time: '',
+  guests: 2,
+  comment: '',
+}
 
 export default function BookingForm() {
   const [booking, setBooking] = useState(null)
-  const [comment, setComment] = useState('')
-  const [guests, setGuests] = useState(2)
-  const nameRef = useRef(null)
 
-  function handleSubmit(e) {
-    e.preventDefault()
-    const formData = new FormData(e.currentTarget)
-    setBooking(Object.fromEntries(formData))
+  const {
+    register,
+    control,
+    handleSubmit,
+    reset,
+    setFocus,
+    getValues,
+    trigger,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(bookingSchema),
+    defaultValues,
+    mode: 'onTouched',
+  })
+
+  const comment = useWatch({ control, name: 'comment' })
+
+  function onValid(data) {
+    setBooking(data)
   }
 
   function handleKeyDown(e) {
@@ -21,73 +45,118 @@ export default function BookingForm() {
   }
 
   function handleReset() {
+    setFocus('name')
+    reset()
     setBooking(null)
-    setComment('')
-    setGuests(2)
-    nameRef.current.focus()
   }
 
   return (
     <form
       className="booking-form"
-      onSubmit={handleSubmit}
+      noValidate
+      onSubmit={handleSubmit(onValid)}
       onKeyDown={handleKeyDown}
-      onReset={handleReset}
     >
       <div className="field">
         <label>
           Ім'я
-          <input ref={nameRef} name="name" autoComplete="name" required />
+          <input
+            {...register('name')}
+            autoComplete="name"
+            required
+            aria-invalid={errors.name ? 'true' : 'false'}
+            aria-describedby="name-error"
+          />
         </label>
-        <p id="name-error" className="field-error"></p>
+        <p id="name-error" className="field-error">
+          {errors.name?.message}
+        </p>
       </div>
+
       <div className="field">
         <label>
           Телефон
           <input
             type="tel"
-            name="phone"
+            {...register('phone')}
             autoComplete="tel"
             placeholder="+380671234567"
             required
+            aria-invalid={errors.phone ? 'true' : 'false'}
+            aria-describedby="phone-error"
           />
         </label>
-        <p id="phone-error" className="field-error"></p>
+        <p id="phone-error" className="field-error">
+          {errors.phone?.message}
+        </p>
       </div>
+
       <div className="row">
         <div className="field">
           <label>
             Дата
-            <input type="date" name="date" required />
+            <input
+              type="date"
+              {...register('date', {
+                onChange: () => {
+                  if (getValues('time')) trigger('time')
+                },
+              })}
+              required
+              aria-invalid={errors.date ? 'true' : 'false'}
+              aria-describedby="date-error"
+            />
           </label>
-          <p id="date-error" className="field-error"></p>
+          <p id="date-error" className="field-error">
+            {errors.date?.message}
+          </p>
         </div>
+
         <div className="field">
           <label>
             Час
-            <input type="time" name="time" required />
+            <input
+              type="time"
+              {...register('time')}
+              required
+              aria-invalid={errors.time ? 'true' : 'false'}
+              aria-describedby="time-error"
+            />
           </label>
-          <p id="time-error" className="field-error"></p>
+          <p id="time-error" className="field-error">
+            {errors.time?.message}
+          </p>
         </div>
       </div>
-      <GuestsStepper value={guests} onChange={setGuests} />
+
+      <Controller
+        name="guests"
+        control={control}
+        render={({ field }) => (
+          <GuestsStepper value={field.value} onChange={field.onChange} />
+        )}
+      />
+
       <label>
         Коментар
         <textarea
-          name="comment"
+          {...register('comment')}
           maxLength={200}
           aria-describedby="comment-counter"
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
         />
       </label>
+
       <p id="comment-counter" className="counter">
         {comment.length} / 200
       </p>
+
       <div className="actions">
         <button type="submit">Забронювати</button>
-        <button type="reset">Очистити</button>
+        <button type="button" onClick={handleReset}>
+          Очистити
+        </button>
       </div>
+
       <p role="status" className="status">
         {booking && describeBooking(booking)}
       </p>
